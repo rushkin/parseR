@@ -8,6 +8,8 @@
 #' \item{ins_weights}{A named vector of weights for inserting a character. E.g. ins_weights["a"] is the penalty for the scribe inserting an "a".}
 #' \item{del_weights}{A named vector of weights for deleting (omitting) a character. E.g. del_weights["a"] is the penalty for the scribe omitting an "a".}
 #' \item{sub_weights}{A named matrix of weights for substituting one character instead of another. E.g. sub_weights["a","b"] is the penalty for the scribe writing "a" instead of "b".}
+#' \item{maxnchardiff}{The maximum difference in the character counts of two words for which distance is computed, if exceeded, distance Inf is assigned. Used for speed, to avoid calculating distances between clearly different words.}
+#' @export
 spelling_settings_default=function(){
 spelling_settings=list()
 
@@ -44,18 +46,18 @@ spelling_settings$sub_weights['c','\003']=0.1
 
 spelling_settings$sub_weights['\004','l']=0.1
 spelling_settings$sub_weights['l','\004']=0.1
-
+spelling_settings$maxnchardiff=4
 return(spelling_settings)
 }
 
-spelldist_elem=function(x,y,maxnchardiff=3){##Maxchardiff is for speeding things up: if two words length differ by more, do not bother computing the spell distance.
+spelldist_elem=function(x,y,spelling_settings){
   m=length(x)
   n=length(y)
+  if(abs(m-n)>spelling_settings$maxnchardiff){
+    return(Inf)
+  }
   x=match(x,spelling_settings$characters)
   y=match(y,spelling_settings$characters)
-  # if(abs(m-n)>maxnchardiff){
-  #   return(NA)
-  # }
   if(m==0){
     if(n==0){
       return(0)
@@ -110,7 +112,6 @@ spelldist=function(real,ideal=NULL, spelling_settings=NULL){
     spelling_settings=spelling_settings_default()
   }
 
-
   if(is.null(ideal)){
     ideal=real
   }
@@ -132,7 +133,7 @@ spelldist=function(real,ideal=NULL, spelling_settings=NULL){
 
   temp=lapply(text1,function(y){
     dd=sapply(text2,function(x){
-      spelldist_elem(y,x)
+      spelldist_elem(y,x,spelling_settings=spelling_settings)
     })
   })
   mat=do.call(rbind,temp)

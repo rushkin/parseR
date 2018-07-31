@@ -13,6 +13,7 @@ a list of spelling settings:
 \item{ins_weights}{A named vector of weights for inserting a character. E.g. ins_weights["a"] is the penalty for the scribe inserting an "a".}
 \item{del_weights}{A named vector of weights for deleting (omitting) a character. E.g. del_weights["a"] is the penalty for the scribe omitting an "a".}
 \item{sub_weights}{A named matrix of weights for substituting one character instead of another. E.g. sub_weights["a","b"] is the penalty for the scribe writing "a" instead of "b".}
+\item{maxnchardiff}{The maximum difference in the character counts of two words for which distance is computed, if exceeded, distance Inf is assigned. Used for speed, to avoid calculating distances between clearly different words.}
 }
 \description{
 Generate the default spelling error weights and some other spelling settings
