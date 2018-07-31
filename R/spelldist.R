@@ -105,11 +105,11 @@ spelldist_elem=function(x,y,spelling_settings){
 #'Calculate spelling distance matrix according to weights of insertion, deletion and substitution of characters of character combinations
 #'
 #' @param real a vector of word forms as the scribe wrote them, case-insensitive.
-#' @param ideal a vector of word forms in correct spelling, case-insensitive. If NULL, will use \code{real}, thus returning a square distance matrix.
-#' @param spelling_settings a list of spelling error weights. If NULL, will use the default settings.
+#' @param ideal a vector of word forms in correct spelling, case-insensitive. If NULL, will use \code{real}, thus returning a symmetric distance matrix.
+#' @param spelling_settings a list of spelling settings, such as spelling weights (=penalties). If NULL, will use the default settings.
 #'
 #' @return a matrix of spelling distances.
-#' @details Zero weights (penalties) for insertion or substitution do not require the spelling-distance algorithm (it is simply spelling normalization). Hence, setting some of these weights to zero improves the speed of calculation compared to however small but non-zero weights.
+#' @details Due to different spelling weights, the distance matrix may not by symmetric. Zero weights (penalties) for insertion or substitution do not require the spelling-distance algorithm (it is simply spelling normalization). Hence, setting some of these weights to zero improves the speed of calculation compared to however small but non-zero weights.
 #' @export
 spelldist=function(real,ideal=NULL, spelling_settings=NULL){
 
