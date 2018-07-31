@@ -19,3 +19,6 @@ a matrix of spelling distances.
 \description{
 Calculate spelling distance matrix according to weights of insertion, deletion and substitution of characters of character combinations
 }
+\details{
+Zero weights (penalties) for insertion or substitution do not require the spelling-distance algorithm (it is simply spelling normalization). Hence, setting some of these weights to zero improves the speed of calculation compared to however small but non-zero weights.
+}

@@ -51,10 +51,14 @@ return(spelling_settings)
 }
 
 spelldist_elem=function(x,y,spelling_settings){
+
   m=length(x)
   n=length(y)
   if(abs(m-n)>spelling_settings$maxnchardiff){
     return(Inf)
+  }
+  if(m==n){
+    if(all(x==y)){return(0)}
   }
   x=match(x,spelling_settings$characters)
   y=match(y,spelling_settings$characters)
@@ -105,6 +109,7 @@ spelldist_elem=function(x,y,spelling_settings){
 #' @param spelling_settings a list of spelling error weights. If NULL, will use the default settings.
 #'
 #' @return a matrix of spelling distances.
+#' @details Zero weights (penalties) for insertion or substitution do not require the spelling-distance algorithm (it is simply spelling normalization). Hence, setting some of these weights to zero improves the speed of calculation compared to however small but non-zero weights.
 #' @export
 spelldist=function(real,ideal=NULL, spelling_settings=NULL){
 
@@ -131,11 +136,41 @@ spelldist=function(real,ideal=NULL, spelling_settings=NULL){
   text1=strsplit(real,'')
   text2=strsplit(ideal,'')
 
-  temp=lapply(text1,function(y){
-    dd=sapply(text2,function(x){
-      spelldist_elem(y,x,spelling_settings=spelling_settings)
+  #If there are zero penalties for insertion or substitution, we can simply gsub, which is much quicker. This is "spelling normalization
+  free_insertions=names(spelling_settings$ins_weights)[spelling_settings$ins_weights==0]
+  text1=lapply(text1,function(str){str=str[!(str %in% free_insertions)]})
+
+  free_substitutions=which(spelling_settings$sub_weights==0,arr.ind=TRUE)
+  free_substitutions=free_substitutions[free_substitutions[,1]>free_substitutions[,2],]
+  rows=rownames(spelling_settings$sub_weights)[free_substitutions[,1]]
+  cols=colnames(spelling_settings$sub_weights)[free_substitutions[,2]]
+  free_substitutions[,1]=rows
+  free_substitutions[,2]=cols
+  rownames(free_substitutions)=NULL
+  colnames(free_substitutions)=NULL
+
+  text1=lapply(text1,function(str){
+    i=free_substitutions[match(str,free_substitutions[,1]),2]
+    ind=which(!is.na(i))
+    str[ind]=i[ind]
+    return(str)
     })
+
+  text2=lapply(text2,function(str){
+    i=free_substitutions[match(str,free_substitutions[,1]),2]
+    ind=which(!is.na(i))
+    str[ind]=i[ind]
+    return(str)
   })
+
+
+
+
+  temp=lapply(text1,function(y,spelling_settings){
+    dd=sapply(text2,function(x,spelling_settings){
+      spelldist_elem(y,x,spelling_settings=spelling_settings)
+    },spelling_settings=spelling_settings)
+  },spelling_settings=spelling_settings)
   mat=do.call(rbind,temp)
 
 
