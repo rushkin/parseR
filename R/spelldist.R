@@ -60,8 +60,7 @@ spelldist_elem=function(x,y,spelling_settings){
   if(m==n){
     if(all(x==y)){return(0)}
   }
-  x=match(x,spelling_settings$characters)
-  y=match(y,spelling_settings$characters)
+
   if(m==0){
     if(n==0){
       return(0)
@@ -128,13 +127,14 @@ spelldist=function(real,ideal=NULL, spelling_settings=NULL){
   colnms=ideal
 
 
-    for(i in 1:length(spelling_settings$combinations))
+    for(i in 1:length(spelling_settings$combinations)){
       real=gsub(names(spelling_settings$combinations)[i],spelling_settings$combinations[i],real)
     ideal=gsub(names(spelling_settings$combinations)[i],spelling_settings$combinations[i],ideal)
+    }
 
-
-  text1=strsplit(real,'')
-  text2=strsplit(ideal,'')
+  #Convert strings to numeric vectors
+  text1=lapply(strsplit(real,''),function(x){match(x,spelling_settings$characters)})
+  text2=lapply(strsplit(ideal,''),function(x){match(x,spelling_settings$characters)})
 
   #If there are zero penalties for insertion or substitution, we can simply gsub, which is much quicker. This is "spelling normalization
   free_insertions=names(spelling_settings$ins_weights)[spelling_settings$ins_weights==0]
@@ -142,12 +142,6 @@ spelldist=function(real,ideal=NULL, spelling_settings=NULL){
 
   free_substitutions=which(spelling_settings$sub_weights==0,arr.ind=TRUE)
   free_substitutions=free_substitutions[free_substitutions[,1]>free_substitutions[,2],]
-  rows=rownames(spelling_settings$sub_weights)[free_substitutions[,1]]
-  cols=colnames(spelling_settings$sub_weights)[free_substitutions[,2]]
-  free_substitutions[,1]=rows
-  free_substitutions[,2]=cols
-  rownames(free_substitutions)=NULL
-  colnames(free_substitutions)=NULL
 
   text1=lapply(text1,function(str){
     i=free_substitutions[match(str,free_substitutions[,1]),2]
