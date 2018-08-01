@@ -1,4 +1,21 @@
-cleanText=function(text
+#' Clean document texts
+#'
+#' @param text vector of character strings
+#' @param lowercase logical: whether to convert to lower case
+#' @param replacechars names vector showing how to substitute characters to normalize spelling
+#' @param removeangbracketed logical: whether to remove text between angle brackets
+#' @param removeparensed logical: whether to remove text in parentheses
+#' @param onlycharacter logical: whether to strip all but alphanumeric characters
+#' @param removepunctuation logical: whether to remove punctuation (matters only if \code{onlycharacter=FALSE})
+#' @param removestopwords logical: whether to remove stopwords. CURRENTLY HAS NO EFFECT.
+#' @param language logical: what language stopwords to use. CURRENTLY HAS NO EFFECT.
+#' @param customstopwords a vector of stopwords to remove.
+#' @param removenumbers logical, whether to remove numeric characters.
+#' @param removeextraspaces logical, whether to trim extra spaces.
+#'
+#' @return a vector of character strings, the clean version of \code{text}.
+#' @export
+iclean=function(text
                ,lowercase=TRUE
                ,replacechars=c('j'='i','v'='u')
                ,removeangbracketed=TRUE
