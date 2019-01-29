@@ -5,9 +5,10 @@
 \title{Clean document texts}
 \usage{
 iclean(text, lowercase = TRUE, replacechars = c(j = "i", v = "u"),
-  removeangbracketed = TRUE, removeparensed = TRUE, onlycharacter = TRUE,
-  removepunctuation = FALSE, removestopwords = FALSE, language = "lat",
-  customstopwords = NULL, removenumbers = FALSE, removeextraspaces = TRUE)
+  removeangbracketed = TRUE, removeparensed = TRUE,
+  onlycharacter = TRUE, removepunctuation = FALSE,
+  removestopwords = FALSE, language = "lat", customstopwords = NULL,
+  removenumbers = FALSE, removeextraspaces = TRUE)
 }
 \arguments{
 \item{text}{vector of character strings}

@@ -9,7 +9,6 @@
 #' \item{del_weights}{A named vector of weights for deleting (omitting) a character. E.g. del_weights["a"] is the penalty for the scribe omitting an "a".}
 #' \item{sub_weights}{A named matrix of weights for substituting one character instead of another. E.g. sub_weights["a","b"] is the penalty for the scribe writing "a" instead of "b".}
 #' \item{maxnchardiff}{The maximum difference in the character counts of two words for which distance is computed, if exceeded, distance Inf is assigned. Used for speed, to avoid calculating distances between clearly different words.}
-#' @export
 spelling_settings_default=function(){
 spelling_settings=list()
 
@@ -109,8 +108,7 @@ spelldist_elem=function(x,y,spelling_settings){
 #'
 #' @return a matrix of spelling distances.
 #' @details Due to different spelling weights, the distance matrix may not by symmetric. Zero weights (penalties) for insertion or substitution do not require the spelling-distance algorithm (it is simply spelling normalization). Hence, setting some of these weights to zero improves the speed of calculation compared to however small but non-zero weights.
-#' @export
-spelldist=function(real,ideal=NULL, spelling_settings=NULL){
+spelldist_old=function(real,ideal=NULL, spelling_settings=NULL){
 
   if(is.null(spelling_settings)){
     spelling_settings=spelling_settings_default()

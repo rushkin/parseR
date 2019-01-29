@@ -8,5 +8,6 @@ Description: Currently focuses on Latin.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
-Imports: XML
+RoxygenNote: 6.1.0
+Imports: XML,
+        TraMineR
